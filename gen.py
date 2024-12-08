@@ -195,15 +195,14 @@ output = boilerplate_begin
 #         # output = output + japanese_ribbing_1_1(i, j) + "\n"
 
 model = [[knit_stitch, purl_stitch]*10,
-         [knit_stitch, purl_stitch]*10,
-         [m1r, yarn_over]*10]*5
+         [twisted_knit_stitch, purl_stitch]*10]*5
 
 i=0
 j=0
 
 for row in model:
     for stitch in row:
-        output = output + stitch(i*12, j*12) + "\n"
+        output = output + stitch(j*12, i*12) + "\n"
         j = j+1
     j=0
     i = i+1
