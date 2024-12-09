@@ -9,14 +9,14 @@ def str_coords(x,y):
 # toujours rentre dans un carré 12x12
 def thread(x0, y0) :
     path1 = '''<path d="M '''+str_coords(x0, 4+y0)+" Q "+str_coords(4+x0, 4+y0)+" "+str_coords(4+x0, 12+y0)+" L "+str_coords(4+x0, 12+y0)+'''" 
-    fill="none" stroke="url(#gradienth1)" stroke-width="5"/>'''
+    fill="none" stroke="black" stroke-width="2"/>'''
 
     path2='''
     <path d="M '''+ str_coords(12+x0, 4+y0)+" Q "+str_coords(8+x0, 4+y0)+" "+str_coords(8+x0, 12+y0)+" L "+str_coords(8+x0, 12+y0)+'''"
-    fill="none" stroke="url(#gradienth2)" stroke-width="5"/>'''
+    fill="none" stroke="black" stroke-width="2"/>'''
 
     path3='''<path d="M '''+str_coords(4+x0, y0)+" C "+str_coords(x0+4, y0+4)+" "+str_coords(x0, 9+y0)+" "+str_coords(x0+6, 9+y0)+" S "+str_coords(x0+8, y0+4)+" "+str_coords(x0+8, y0)+'''"
-    fill="none" stroke="url(#gradientv)" stroke-width="5"/>'''
+    fill="none" stroke="black" stroke-width="2"/>'''
 
     return (path1+path2+path3)
 

@@ -97,7 +97,8 @@ output = boilerplate.begin
 #         # output = output + japanese_ribbing_1_1(i, j) + "\n"
 
 model = [[knit_stitch, purl_stitch]*10, # highest line in the pattern 
-         [twisted_knit_stitch, purl_stitch]*10]*5
+         [twisted_knit_stitch, purl_stitch]*10,
+         [thread]*20]*5
 
 i=0
 j=0
