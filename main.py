@@ -4,7 +4,6 @@ import boilerplate
 
 outfile = open(r"/tmp/test.svg", "w")
 
-
 ### pattern functions
 
 def ribbing_2_2(i, j):
@@ -96,22 +95,36 @@ output = boilerplate.begin
 #         # output = output + twisted(i, j) + "\n"
 #         # output = output + japanese_ribbing_1_1(i, j) + "\n"
 
-model = [[knit_stitch, purl_stitch]*10, # highest line in the pattern 
-         [twisted_knit_stitch, purl_stitch]*10,
-         [thread]*20]*5
+# with a list of raw functions
+# model = [[knit_stitch, purl_stitch]*10, # highest line in the pattern 
+#          [twisted_knit_stitch, purl_stitch]*10,
+#          [thread]*20,
+#          [thread]*20]*5
+
+# i=0
+# j=0
+
+# for row in model:
+#     for stitch in row:
+#         output = output + stitch(j*12, i*12) + "\n"
+#         j = j+1
+#     j=0
+#     i = i+1
+
+# with classes
+model = [[k]*10]*10
 
 i=0
 j=0
 
 for row in model:
     for stitch in row:
-        output = output + stitch(j*12, i*12) + "\n"
+        output = output + stitch.f(j*12, i*12) + "\n"
         j = j+1
     j=0
     i = i+1
 
 output = output+boilerplate.end
-
 outfile.write(output)
 
 # outfile.write(boilerplate.begin
