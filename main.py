@@ -1,135 +1,67 @@
 from random import choice
+from math import atan, degrees
 from stitches import *
 import boilerplate
 
-outfile = open(r"/tmp/test.svg", "w")
-
-### pattern functions
-
-def ribbing_2_2(i, j):
-    res = ""
-    
-    width_pattern = 4
-    height_pattern = 1
-
-    res = res+knit_stitch(0+i*12*width_pattern,0+j*12*height_pattern)
-    res = res+knit_stitch(12+i*12*width_pattern,0+j*12*height_pattern)
-    res = res+purl_stitch(2*12+i*12*width_pattern,0+j*12*height_pattern)
-    res = res+purl_stitch(3*12+i*12*width_pattern,0+j*12*height_pattern)
-
-    return res
-
-def japanese_ribbing_1_1(i, j):
-    res = ""
-    
-    width_pattern = 2
-    height_pattern = 1
-
-    res = res+twisted_knit_stitch(0+i*12*width_pattern,0+j*12*height_pattern)
-    res = res+purl_stitch(12+i*12*width_pattern,0+j*12*height_pattern)
-
-    return res
-
-def twisted(i, j):
-    res = ""
-    
-    width_pattern = 2
-    height_pattern = 1
-
-    res = res+knit_stitch(0+i*12*width_pattern,0+j*12*height_pattern)
-    res = res+twisted_knit_stitch(12+i*12*width_pattern,0+j*12*height_pattern)
-
-    return res
-
-
-def rice(i, j):
-    res = ""
-    
-    width_pattern = 2
-    height_pattern = 2
-
-    res = res+knit_stitch(0+i*12*width_pattern,0+j*12*height_pattern)
-    res = res+purl_stitch(12+i*12*width_pattern,0+j*12*height_pattern)
-    res = res+purl_stitch(0*12+i*12*width_pattern,12+j*12*height_pattern)
-    res = res+knit_stitch(1*12+i*12*width_pattern,12+j*12*height_pattern)
-    
-    return res
-
-def lace(i, j):
-    res = ""
-    
-    width_pattern = 2
-    height_pattern = 2
-
-    res = res+knit_stitch(0+i*12*width_pattern,0+j*12*height_pattern)
-    res = res+knit_stitch(12+i*12*width_pattern,0+j*12*height_pattern)
-    res = res+knit_stitch(0*12+i*12*width_pattern,12+j*12*height_pattern)
-    res = res+yarn_over(1*12+i*12*width_pattern,12+j*12*height_pattern)
-
-    return res
-
-def lace2(i, j):
-    res = ""
-    
-    width_pattern = 2
-    height_pattern = 2
-
-    res = res+m1l(0+i*12*width_pattern,0+j*12*height_pattern)
-    res = res+knit_stitch(12+i*12*width_pattern,0+j*12*height_pattern)
-    res = res+knit_stitch(0*12+i*12*width_pattern,12+j*12*height_pattern)
-    res = res+m1r(1*12+i*12*width_pattern,12+j*12*height_pattern)
-
-    return res
-
-### 
-    
-output = boilerplate.begin
-
-# for i in range(0, 10):
-#     for j in range(0, 10):
-#         # if 1 == 0:
-#         #     output = output + ribbing_2_2(i, j) + "\n"
-#         # else:
-#         #     output = output + rice(i, j) + "\n"
-#         output = output + lace2(i, j) + "\n"
-#         # output = output + twisted(i, j) + "\n"
-#         # output = output + japanese_ribbing_1_1(i, j) + "\n"
-
-# with a list of raw functions
-# model = [[knit_stitch, purl_stitch]*10, # highest line in the pattern 
-#          [twisted_knit_stitch, purl_stitch]*10,
-#          [thread]*20,
-#          [thread]*20]*5
-
-# i=0
-# j=0
-
-# for row in model:
-#     for stitch in row:
-#         output = output + stitch(j*12, i*12) + "\n"
-#         j = j+1
-#     j=0
-#     i = i+1
 
 # with classes
-model = [[k]*10]*10
 
-i=0
-j=0
+# model = [[k, tk, yo]*3]*10
 
-for row in model:
-    for stitch in row:
-        output = output + stitch.f(j*12, i*12) + "\n"
-        j = j+1
+# exemple of model with increases
+model1 = [[k]*6*2,
+          [tk, yo, tk, tk, yo, tk]*2, 
+          [k]*4*2,
+          [tk, yo, tk, tk]*2,
+          [k]*3*2]
+
+
+def draw_model(model):
+    '''Assembles the svg file corresponding to the model and writes it to /tmp/test.svg'''
+
+    output = boilerplate.begin
+
+    i=0
     j=0
-    i = i+1
 
-output = output+boilerplate.end
-outfile.write(output)
+    inc_prev = [0]*len(model1[0]) # we don't rotate the top-most row
+    n_inc_total = 0
+    
+    for row in model:
+        # array of the number of increases
+        inc = []
+        # current number of increases
+        n_inc = 0 # number of increases in the row so far
+        for stitch in row:
+            if stitch.stype == StitchType.NORMAL:
+                inc.append(n_inc) # add the rotation (which should be offset by half of the total rotation)
+            else:
+                n_inc += 1
+            angle = 0
+            if inc_prev[j] != 0:
+                angle = degrees(atan(inc_prev[j]))
+            output = output + stitch.f((j+n_inc_total/2)*12, i*12, angle) + "\n"
+            j += 1
 
-# outfile.write(boilerplate.begin
-#               +knit_stitch(0,0)
-#               +knit_stitch(0,120)
-#               +knit_stitch(120,0)
-#               +knit_stitch(120,120)
-#               +boilerplate.end)
+        output = output + "\n <!-- new row --> \n"
+            
+        print("Increases = ", inc)
+        print("n_inc = ", n_inc)
+        print("Increases of previous row = ", inc_prev)
+        print("Total number of increases = ", n_inc_total)
+        print()
+
+        inc_prev = list(map(lambda x: x-n_inc/2, inc))
+        n_inc_total += n_inc
+                
+        j = 0
+        i += 1
+        
+    output = output+boilerplate.end
+
+    return output
+
+outfile = open(r"/tmp/test.svg", "w")
+
+outfile.write(draw_model(model1))
+outfile.close()
